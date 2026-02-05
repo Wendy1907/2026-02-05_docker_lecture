@@ -1,0 +1,30 @@
+name: Build Docker Image 
+
+on:
+  push:
+    branches: [ "main" ]
+    paths:
+      - 'Dockerfile'
+  pull_request:
+    branches: [ "main" ]
+    paths:
+      - 'Dockerfile'
+
+jobs:
+
+  build:
+
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v4
+    - name: Login to Docker Hub
+      uses: docker/login-activity@v3
+      with:
+        username: ${{ secrets.DOCKERHUB_USERNAME }}
+        password: ${{ secrets.DOCKERHUB_PASSWORD }}
+    - name: Build the Docker image
+      run: docker build . --file Dockerfile --tag wendy1907/rstudio-cowsay:latest
+
+    - name: Push the Docker Image
+      run: docker push wendy1907/rstudio-cowsay:latest
